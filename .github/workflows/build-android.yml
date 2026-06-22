@@ -27,8 +27,13 @@ jobs:
         cp index.html www/
         cp amor.mp3 www/
     
-    - name: Build Android with Capacitor
-      run: npx cap add android && npx cap sync
+    - name: Setup Capacitor
+      run: |
+        npx cap init MiNovia com.tunombre.minovia --web-dir=www
+        npx cap add android
+    
+    - name: Sync Capacitor
+      run: npx cap sync
     
     - name: Setup Java
       uses: actions/setup-java@v4
