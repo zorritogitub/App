@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¿Quieres ser mi novia? 💕</title>
+    
+    <!-- ===== ICONO DE CORAZÓN ===== -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23ff6b6b'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>❤️</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23ff6b6b'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>❤️</text></svg>">
+    
     <style>
         * {
             margin: 0;
@@ -199,6 +204,450 @@
             padding: 20px;
             border-radius: 20px;
             margin: 20px 0;
+            font-size: 18px;
+        }
+
+        .countdown .days {
+            font-size: 48px;
+            font-weight: 800;
+            display: block;
+        }
+
+        .countdown .label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        #bgMusic {
+            display: none;
+        }
+
+        .btn-music {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 15px;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-music:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            .btn {
+                padding: 12px 25px;
+                font-size: 17px;
+            }
+            .countdown .days {
+                font-size: 36px;
+            }
+            .emoji-big {
+                font-size: 60px;
+            }
+        }
+
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* ===== ESTILOS PARA NOTIFICACIONES ===== */
+        .notification-badge {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 107, 107, 0.95);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .notification-badge.active {
+            display: block;
+        }
+
+        .notification-badge .icon {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hearts-container" id="heartsContainer"></div>
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- 🎵 AUDIO LOCAL -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="amor.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ===== BADGE DE NOTIFICACIÓN (visible en la app) ===== -->
+    <div class="notification-badge" id="notificationBadge">
+        <span class="icon">💕</span>
+        <span id="notificationText">Notificaciones activas</span>
+    </div>
+
+    <div class="container">
+        <div class="main-screen" id="mainScreen">
+            <div class="emoji-big">🥺</div>
+            <h1>¿Quieres ser mi novia? 💕</h1>
+            <p class="subtitle">Te prometo hacerte muy feliz 🌹</p>
+            <div class="buttons">
+                <button class="btn btn-yes" onclick="sayYes()">¡SÍ! 💖</button>
+                <button class="btn btn-no" id="noBtn">No 😢</button>
+            </div>
+            <p style="margin-top:15px; color:#999; font-size:14px;">(No hay respuesta incorrecta)</p>
+        </div>
+
+        <div class="sure-screen" id="sureScreen">
+            <div class="emoji-big">🤔</div>
+            <h1>¿Estás completamente segura?</h1>
+            <p class="subtitle">No quiero que te arrepientas... ❤️</p>
+            <div class="buttons">
+                <button class="btn btn-yes" onclick="finalYes()">Sí, estoy segura 💕</button>
+                <button class="btn btn-no" onclick="goBack()">Déjame pensarlo...</button>
+            </div>
+        </div>
+
+        <div class="final-screen" id="finalScreen">
+            <div class="emoji-big">💖</div>
+            <h1>¡Dijiste que SÍ! 🎉</h1>
+            <div class="message">
+                Eres lo mejor que me ha pasado 🌹<br>
+                Prometo cuidarte, quererte y hacerte sonreír cada día ❤️
+            </div>
+
+            <div class="countdown">
+                <span class="label">⏳ Faltan para vernos el 30 de agosto:</span>
+                <span class="days" id="countdownDays">--</span>
+                <span class="label">días 💕</span>
+            </div>
+
+            <div style="margin: 15px 0; font-size: 20px;">
+                🌹❤️🌹❤️🌹❤️🌹
+            </div>
+
+            <p style="color:#666; font-size:15px; margin-top:10px;">
+                Te quiero mucho, <span id="partnerName">amor</span> 💋
+            </p>
+
+            <button class="btn-music" onclick="toggleMusic()">🎵 Pausar música</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== CORAZONES FLOTANTES =====
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const emojis = ['❤️', '💕', '💖', '💗', '💓', '🌸', '🌹', '✨'];
+            for (let i = 0; i < 25; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                heart.style.animationDelay = (Math.random() * 8) + 's';
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        // ===== BOTÓN "NO" QUE HUYE =====
+        const noBtn = document.getElementById('noBtn');
+        let noClickCount = 0;
+
+        noBtn.addEventListener('mouseover', function() {
+            if (noClickCount < 10) {
+                const x = Math.random() * 200 - 100;
+                const y = Math.random() * 200 - 100;
+                this.style.transform = `translate(${x}px, ${y}px)`;
+                const textos = ['¿Segura? 😅', 'Piensa bien 😏', 'No te escapes 🥺', 'Dime que sí ❤️', 'Te quiero 💕', 'No huyas 🥰', 'Solo di que sí 😘', 'Mi amor 💖', 'Por favor 🙏', 'Te lo pido 💗'];
+                this.textContent = textos[noClickCount] || 'No 😢';
+                noClickCount++;
+            }
+        });
+
+        noBtn.addEventListener('click', function() {
+            if (noClickCount < 10) {
+                const x = Math.random() * 300 - 150;
+                const y = Math.random() * 300 - 150;
+                this.style.transform = `translate(${x}px, ${y}px)`;
+                const textos = ['¿Segura? 😅', 'Piensa bien 😏', 'No te escapes 🥺', 'Dime que sí ❤️', 'Te quiero 💕', 'No huyas 🥰', 'Solo di que sí 😘', 'Mi amor 💖', 'Por favor 🙏', 'Te lo pido 💗'];
+                this.textContent = textos[noClickCount] || 'No 😢';
+                noClickCount++;
+            } else {
+                this.style.display = 'none';
+                alert('💕 No hay opción de decir no... ¡Tienes que decir que sí! 😘');
+            }
+        });
+
+        // ===== FUNCIONES DE PANTALLAS =====
+        function sayYes() {
+            document.getElementById('mainScreen').classList.add('hidden');
+            document.getElementById('sureScreen').classList.add('active');
+            playMusic();
+        }
+
+        function goBack() {
+            document.getElementById('sureScreen').classList.remove('active');
+            document.getElementById('mainScreen').classList.remove('hidden');
+        }
+
+        // ===== MÚSICA =====
+        let musicPlaying = false;
+        const audio = document.getElementById('bgMusic');
+
+        function playMusic() {
+            if (!musicPlaying) {
+                audio.play()
+                    .then(() => {
+                        console.log('✅ Música reproduciéndose correctamente');
+                        musicPlaying = true;
+                    })
+                    .catch((error) => {
+                        console.log('❌ Error al reproducir: ' + error);
+                    });
+            }
+        }
+
+        function toggleMusic() {
+            if (musicPlaying) {
+                audio.pause();
+                musicPlaying = false;
+                document.querySelector('.btn-music').textContent = '🎵 Activar música';
+            } else {
+                audio.play().then(() => {
+                    musicPlaying = true;
+                    document.querySelector('.btn-music').textContent = '🎵 Pausar música';
+                }).catch(() => {});
+            }
+        }
+
+        // ===== REPRODUCIR AUTOMÁTICAMENTE =====
+        document.addEventListener('click', function autoPlay() {
+            playMusic();
+            document.removeEventListener('click', autoPlay);
+        });
+
+        window.addEventListener('load', function() {
+            audio.play().then(() => {
+                musicPlaying = true;
+                console.log('✅ Reproducción automática exitosa');
+            }).catch(() => {
+                console.log('⏳ Esperando interacción del usuario');
+            });
+        });
+
+        // ===== CUENTA REGRESIVA =====
+        function startCountdown() {
+            const targetDate = new Date('2026-08-30T00:00:00');
+            const now = new Date();
+            const diff = targetDate - now;
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+            if (days > 0) {
+                document.getElementById('countdownDays').textContent = days;
+            } else if (days === 0) {
+                document.getElementById('countdownDays').textContent = '🎉 ¡HOY!';
+            } else {
+                document.getElementById('countdownDays').textContent = '❤️ Ya pasó, pero te sigo queriendo';
+            }
+        }
+
+        // ===== CONFETI =====
+        function launchConfetti() {
+            const container = document.getElementById('confettiContainer');
+            const colors = ['#ff6b6b', '#ff2d55', '#ffd93d', '#6bcb77', '#4d96ff', '#ff9ff3', '#feca57'];
+            const shapes = ['■', '●', '▲', '★', '◆', '❤'];
+
+            for (let i = 0; i < 120; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+                piece.style.color = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                piece.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                piece.style.animationDelay = (Math.random() * 3) + 's';
+                container.appendChild(piece);
+
+                setTimeout(() => {
+                    piece.remove();
+                }, 6000);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('finalScreen').classList.contains('active')) {
+                    launchConfetti();
+                }
+            }, 5000);
+        }
+
+        // ===== NOTIFICACIONES FIJAS (WEB) =====
+        let notificationInterval;
+        let isNotificationActive = false;
+
+        function activarNotificacionFija() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('✅ Permiso de notificaciones concedido');
+                        isNotificationActive = true;
+                        mostrarNotificacion();
+                        mostrarBadge('💕 Notificaciones activas');
+                        
+                        // Actualizar cada hora
+                        notificationInterval = setInterval(mostrarNotificacion, 3600000);
+                    } else {
+                        console.log('⚠️ Permiso de notificaciones denegado');
+                        mostrarBadge('⚠️ Activa las notificaciones en ajustes');
+                    }
+                });
+            } else {
+                console.log('⚠️ Notificaciones no soportadas');
+                mostrarBadge('💕 Actualiza tu navegador para notificaciones');
+            }
+        }
+
+        function mostrarNotificacion() {
+            const targetDate = new Date('2026-08-30T00:00:00');
+            const now = new Date();
+            const diff = targetDate - now;
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            
+            let mensaje = '';
+            let titulo = '💕 Contando los días...';
+            
+            if (days > 0) {
+                mensaje = `Faltan ${days} días para conocer al amor de tu vida ❤️`;
+            } else if (days === 0) {
+                mensaje = '¡HOY es el día! El amor de tu vida te espera 🎉';
+            } else {
+                mensaje = '❤️ Ya conociste al amor de tu vida, ¡disfrútalo!';
+                titulo = '❤️ Eres el amor de mi vida';
+            }
+            
+            // Actualizar badge
+            mostrarBadge(`💕 ${mensaje}`);
+            
+            // Crear notificación
+            try {
+                const notification = new Notification(titulo, {
+                    body: mensaje,
+                    icon: '❤️',
+                    tag: 'love_notification',
+                    requireInteraction: true,
+                    silent: false,
+                    vibrate: [200, 100, 200]
+                });
+                
+                notification.onclick = function() {
+                    window.focus();
+                    this.close();
+                };
+            } catch(e) {
+                console.log('Error al mostrar notificación:', e);
+            }
+        }
+
+        function mostrarBadge(texto) {
+            const badge = document.getElementById('notificationBadge');
+            const textElement = document.getElementById('notificationText');
+            if (badge && textElement) {
+                textElement.textContent = texto;
+                badge.classList.add('active');
+            }
+        }
+
+        function detenerNotificaciones() {
+            if (notificationInterval) {
+                clearInterval(notificationInterval);
+                notificationInterval = null;
+                isNotificationActive = false;
+                const badge = document.getElementById('notificationBadge');
+                if (badge) {
+                    badge.classList.remove('active');
+                }
+            }
+        }
+
+        // ===== FUNCIÓN FINAL "SÍ" =====
+        function finalYes() {
+            document.getElementById('sureScreen').classList.remove('active');
+            document.getElementById('finalScreen').classList.add('active');
+            startCountdown();
+            launchConfetti();
+            playMusic();
+            
+            // 🔔 ACTIVAR NOTIFICACIONES FIJAS
+            setTimeout(() => {
+                activarNotificacionFija();
+            }, 1000);
+            
+            // Mostrar el nombre personalizado
+            document.getElementById('partnerName').textContent = 'mi vida ❤️';
+        }
+
+        // ===== LIMPIAR AL CERRAR =====
+        window.addEventListener('beforeunload', function() {
+            detenerNotificaciones();
+        });
+
+        // ===== NOMBRE PERSONALIZABLE =====
+        document.getElementById('partnerName').textContent = 'mi vida ❤️';
+
+        console.log('💖 Página lista con notificaciones fijas');
+        console.log('📁 Asegúrate de que el archivo "amor.mp3" esté en la misma carpeta');
+    </script>
+</body>
+</html>            margin: 20px 0;
             font-size: 18px;
         }
 
