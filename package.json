@@ -1,0 +1,20 @@
+{
+  "name": "mi-novia-app",
+  "version": "1.0.0",
+  "description": "App para pedirle a mi novia que sea mi novia ❤️",
+  "main": "index.php",
+  "scripts": {
+    "build": "cp index.php www/ && cp amor.mp3 www/",
+    "start": "npx cap open android",
+    "android": "npx cap add android && npx cap sync",
+    "ios": "npx cap add ios && npx cap sync"
+  },
+  "dependencies": {
+    "@capacitor/core": "^5.0.0",
+    "@capacitor/cli": "^5.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^5.0.0",
+    "@capacitor/ios": "^5.0.0"
+  }
+}
