@@ -1,10 +1,10 @@
 {
-  "name": "mi-novia-app",
+  "name": "Te amow",
   "version": "1.0.0",
-  "description": "App para pedirle a mi novia que sea mi novia ❤️",
-  "main": "index.php",
+  "description": "Quieres ser mi novia❤️",
+  "main": "index.html",
   "scripts": {
-    "build": "cp index.php www/ && cp amor.mp3 www/",
+    "build": "mkdir -p www && cp index.html www/ && cp amor.mp3 www/",
     "start": "npx cap open android",
     "android": "npx cap add android && npx cap sync",
     "ios": "npx cap add ios && npx cap sync"
